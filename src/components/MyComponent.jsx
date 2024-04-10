@@ -34,37 +34,7 @@ const MyComponent = ({ apiUrl }) => {
   const handleChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
-  // const handleEditChange = (id, field, value) => {
-  //   setEditValues({
-  //     ...editValues,
-  //     [id]: {
-  //       ...editValues[id],
-  //       [field]: value,
-  //     },
-  //   });
-  // };
-  // console.log("editValues", editValues);
-
   const handleEdit = async (id) => {
-    // try {
-    //   const { firstname, lastname, email, birthDate } = editValues[id];
-    //   await axios.put(`${apiUrl}/${id}`, {
-    //     firstname,
-    //     lastname,
-    //     email,
-    //     birthDate,
-    //   });
-    // <input
-    //   type="text"
-    //   value={editValues[item.id]?.lastname || item.lastname}
-    //   onChange={(e) => handleEditChange(item.id, "lastname", e.target.value)}
-    // ></input>;
-    // setData(
-    //   data.map((item) =>
-    //     item.id === id ? { ...item, ...editValues[id] } : item
-    //   )
-    // );
     setUpdateData(
       data.filter((item) => {
         if (item.id === id) {
@@ -73,9 +43,6 @@ const MyComponent = ({ apiUrl }) => {
         return false;
       })[0]
     );
-    // } catch (error) {
-    //   console.error("Error updating item:", error);
-    // }
   };
 
   const handleDelete = async (id) => {
