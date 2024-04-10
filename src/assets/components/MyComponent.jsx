@@ -3,6 +3,7 @@ import axios from "axios";
 import Pagination from "react-bootstrap/Pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
+import UpdateForm from "./UpdateForm";
 
 const PAGE_SIZE = 5;
 
@@ -11,6 +12,8 @@ const MyComponent = ({ apiUrl }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [data, setData] = useState([]);
   const [editValues, setEditValues] = useState({});
+  const [updateData, setUpdateData] = useState();
+  console.log("updateData", updateData);
 
   useEffect(() => {
     fetchData();
@@ -32,38 +35,47 @@ const MyComponent = ({ apiUrl }) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleEditChange = (id, field, value) => {
-    setEditValues({
-      ...editValues,
-      [id]: {
-        ...editValues[id],
-        [field]: value,
-      },
-    });
-  };
+  // const handleEditChange = (id, field, value) => {
+  //   setEditValues({
+  //     ...editValues,
+  //     [id]: {
+  //       ...editValues[id],
+  //       [field]: value,
+  //     },
+  //   });
+  // };
+  // console.log("editValues", editValues);
 
   const handleEdit = async (id) => {
-    try {
-      const { firstname, lastname, email, birthDate } = editValues[id];
-      await axios.put(`${apiUrl}/${id}`, {
-        firstname,
-        lastname,
-        email,
-        birthDate,
-      });
-      <input
-        type="text"
-        value={editValues[item.id]?.lastname || item.lastname}
-        onChange={(e) => handleEditChange(item.id, "lastname", e.target.value)}
-      ></input>;
-      setData(
-        data.map((item) =>
-          item.id === id ? { ...item, ...editValues[id] } : item
-        )
-      );
-    } catch (error) {
-      console.error("Error updating item:", error);
-    }
+    // try {
+    //   const { firstname, lastname, email, birthDate } = editValues[id];
+    //   await axios.put(`${apiUrl}/${id}`, {
+    //     firstname,
+    //     lastname,
+    //     email,
+    //     birthDate,
+    //   });
+    // <input
+    //   type="text"
+    //   value={editValues[item.id]?.lastname || item.lastname}
+    //   onChange={(e) => handleEditChange(item.id, "lastname", e.target.value)}
+    // ></input>;
+    // setData(
+    //   data.map((item) =>
+    //     item.id === id ? { ...item, ...editValues[id] } : item
+    //   )
+    // );
+    setUpdateData(
+      data.filter((item) => {
+        if (item.id === id) {
+          return true;
+        }
+        return false;
+      })[0]
+    );
+    // } catch (error) {
+    //   console.error("Error updating item:", error);
+    // }
   };
 
   const handleDelete = async (id) => {
@@ -77,13 +89,16 @@ const MyComponent = ({ apiUrl }) => {
 
   return (
     <div>
+      {updateData ? (
+        <UpdateForm updateData={updateData} data={data} setData={setData} />
+      ) : undefined}
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>#</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Username</th>
+            <th>username</th>
           </tr>
         </thead>
         <tbody>
