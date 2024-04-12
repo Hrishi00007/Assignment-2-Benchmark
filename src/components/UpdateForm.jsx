@@ -21,9 +21,9 @@ const UpdateForm = ({ updateData, data, setData }) => {
         return items;
       }
     });
-    console.log("newData", newData);
     setData(newData);
   }
+
   return (
     <div>
       <Form>
@@ -49,7 +49,7 @@ const UpdateForm = ({ updateData, data, setData }) => {
               onChange={(e) => setLastName(e.target.value)}
             />
           </Form.Group>
-          <Button onClick={handleSubmit}>Submit form</Button>
+          <Button onClick={handleSubmit}>Update</Button>
         </Row>
       </Form>
     </div>

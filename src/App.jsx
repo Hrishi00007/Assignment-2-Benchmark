@@ -1,4 +1,4 @@
-import MyComponent from "./assets/components/MyComponent.jsx";
+import MyComponent from "./components/MyComponent.jsx";
 import React from "react";
 
 const App = () => {

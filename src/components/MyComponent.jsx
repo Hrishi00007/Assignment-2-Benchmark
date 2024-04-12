@@ -4,16 +4,21 @@ import Pagination from "react-bootstrap/Pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import UpdateForm from "./UpdateForm";
+import Button from "react-bootstrap/Button";
+import { Form, Row, Col } from "react-bootstrap";
 
 const PAGE_SIZE = 5;
+let add = false;
 
 const MyComponent = ({ apiUrl }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [data, setData] = useState([]);
-  const [editValues, setEditValues] = useState({});
   const [updateData, setUpdateData] = useState();
-  console.log("updateData", updateData);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -34,6 +39,11 @@ const MyComponent = ({ apiUrl }) => {
   const handleChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const toggleForm = () => {
+    setShowForm(!showForm);
+  };
+
   const handleEdit = async (id) => {
     setUpdateData(
       data.filter((item) => {
@@ -53,38 +63,88 @@ const MyComponent = ({ apiUrl }) => {
       console.error("Error deleting item:", error);
     }
   };
+  const handleAdd = async () => {
+    add = true;
+    const res = await axios.post(apiUrl, { firstname, lastname, email });
+    setData([...data, res.data]);
+    setFirstname("");
+    setLastname("");
+    setEmail("");
+  };
 
   return (
     <div>
-      {updateData ? (
-        <UpdateForm updateData={updateData} data={data} setData={setData} />
-      ) : undefined}
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>username</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.firstname}</td>
-              <td>{item.lastname}</td>
-              <td>{item.email}</td>
-              <td>
-                <button onClick={() => handleEdit(item.id)}>Update</button>
-              </td>
-              <td>
-                <button onClick={() => handleDelete(item.id)}>Delete</button>
-              </td>
+      <div>
+        <Button onClick={toggleForm}>Add data</Button>
+        {showForm && (
+          <div>
+            <Form>
+              <Row className="mb-3">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                    placeholder="First Name"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    type="text"
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                    placeholder="Last Name"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                  />
+                </Col>
+                <Col>
+                  <Button onClick={handleAdd}>Add User</Button>
+                </Col>
+              </Row>
+            </Form>
+          </div>
+        )}
+
+        {updateData ? (
+          <UpdateForm updateData={updateData} data={data} setData={setData} />
+        ) : undefined}
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>username</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody key={data.id}>
+            {data.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.firstname}</td>
+                <td>{item.lastname}</td>
+                <td>{item.email}</td>
+                <td>
+                  <button onClick={() => handleEdit(item.id)}>Update</button>
+                </td>
+                <td>
+                  <button onClick={() => handleDelete(item.id)}>Delete</button>
+                </td>
+                <td>
+                  <Button onClick={handleAdd}>Add</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
       <Pagination>
         <Pagination.Prev
           onClick={() => handleChange(currentPage - 1)}
